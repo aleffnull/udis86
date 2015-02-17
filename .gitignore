@@ -59,6 +59,7 @@ Thumbs.db
 *.ilk
 *.log
 *.sdf
+*.opensdf
 [Ii]pch
 [Bb]uild
 [Bb]in
