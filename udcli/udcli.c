@@ -81,8 +81,8 @@ static char help[] =
 };
 
 FILE* fptr = NULL;
-size_t o_skip = 0;
-size_t o_count = 0;
+uint32_t o_skip = 0;
+uint32_t o_count = 0;
 unsigned char o_do_count= 0;
 unsigned char o_do_off = 1;
 unsigned char o_do_hex = 1;
@@ -138,7 +138,7 @@ int main(int argc, char **argv)
 	else if (strcmp(*argv,"-s") == 0)
 		if (--argc) {
 			s = *(++argv);
-			if (sscanf(s, "%"  FMT64 "u", &o_skip) == 0)
+			if (sscanf(s, "%u", &o_skip) == 0)
 				fprintf(stderr, "Invalid value given for -s.\n");
 		} else { 
 			fprintf(stderr, "No value given for -s.\n");
@@ -149,7 +149,7 @@ int main(int argc, char **argv)
 		if (--argc) {
 			o_do_count= 1;
 			s = *(++argv);
-			if (sscanf(s, "%" FMT64 "u", &o_count) == 0)
+			if (sscanf(s, "%u", &o_count) == 0)
 				fprintf(stderr, "Invalid value given for -c.\n");
 		} else { 
 			fprintf(stderr, "No value given for -c.\n");
