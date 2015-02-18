@@ -24,6 +24,8 @@
  * SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  */
 
+#include <memory.h>
+
 #include "udint.h"
 #include "extern.h"
 #include "decode.h"
