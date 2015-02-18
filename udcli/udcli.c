@@ -81,8 +81,8 @@ static char help[] =
 };
 
 FILE* fptr = NULL;
-uint64_t o_skip = 0;
-uint64_t o_count = 0;
+size_t o_skip = 0;
+size_t o_count = 0;
 unsigned char o_do_count= 0;
 unsigned char o_do_off = 1;
 unsigned char o_do_hex = 1;
