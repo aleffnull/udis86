@@ -64,10 +64,10 @@ ud_init(struct ud* u)
  *    bytes disassembled. A zero means end of disassembly.
  * =============================================================================
  */
-extern unsigned int
+extern size_t
 ud_disassemble(struct ud* u)
 {
-  int len;
+  size_t len;
   if (u->inp_end) {
     return 0;
   }
@@ -165,7 +165,7 @@ ud_insn_hex(struct ud* u)
 {
   u->insn_hexcode[0] = 0;
   if (!u->error) {
-    unsigned int i;
+    size_t i;
     const unsigned char *src_ptr = ud_insn_ptr(u);
     char* src_hex;
     src_hex = (char*) u->insn_hexcode;
@@ -199,7 +199,7 @@ ud_insn_ptr(const struct ud* u)
  *    Returns the count of bytes disassembled.
  * =============================================================================
  */
-extern unsigned int 
+extern size_t
 ud_insn_len(const struct ud* u) 
 {
   return u->inp_ctr;

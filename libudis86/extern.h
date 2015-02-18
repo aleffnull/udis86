@@ -66,9 +66,9 @@ extern LIBUDIS86_DLLEXTERN void ud_input_skip(struct ud*, size_t);
 
 extern LIBUDIS86_DLLEXTERN int ud_input_end(const struct ud*);
 
-extern LIBUDIS86_DLLEXTERN unsigned int ud_decode(struct ud*);
+extern LIBUDIS86_DLLEXTERN size_t ud_decode(struct ud*);
 
-extern LIBUDIS86_DLLEXTERN unsigned int ud_disassemble(struct ud*);
+extern LIBUDIS86_DLLEXTERN size_t ud_disassemble(struct ud*);
 
 extern LIBUDIS86_DLLEXTERN void ud_translate_intel(struct ud*);
 
@@ -82,7 +82,7 @@ extern LIBUDIS86_DLLEXTERN uint64_t ud_insn_off(const struct ud*);
 
 extern LIBUDIS86_DLLEXTERN const char* ud_insn_hex(struct ud*);
 
-extern LIBUDIS86_DLLEXTERN unsigned int ud_insn_len(const struct ud* u);
+extern LIBUDIS86_DLLEXTERN size_t ud_insn_len(const struct ud* u);
 
 extern LIBUDIS86_DLLEXTERN const struct ud_operand* ud_insn_opr(const struct ud *u, unsigned int n);
 
