@@ -1,0 +1,3 @@
+$(SolutionDir)bin\tests\$(Platform)\$(Configuration)\
+$(SolutionDir)obj\tests\$(Platform)\$(Configuration)\
+$(SolutionDir)bin\lib\$(Platform)\$(Configuration)\
