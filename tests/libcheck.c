@@ -73,6 +73,17 @@ unsigned int testcase_check_fails;
     }                                  \
   } TEST_CASE_END()
 
+#define TEST_CHECK_SIZE_T(expr, val)      \
+  TEST_CASE() {                        \
+    size_t eval = (expr);                 \
+    size_t val2 = (val);                  \
+    if (eval != val2) {                \
+      TEST_CASE_SET_FAIL();            \
+      TEST_CASE_REPORT_EXPECTED(val2); \
+      TEST_CASE_REPORT_ACTUAL(eval);   \
+		    }                                  \
+  } TEST_CASE_END()
+
 #define TEST_CHECK_OP_REG(o, n, r) \
   TEST_CHECK(ud_insn_opr(o, n)->type == UD_OP_REG && \
              ud_insn_opr(o, n)->base == (r))
@@ -111,12 +122,12 @@ check_input(ud_t *ud_obj)
                              0x90 };     /* nop */
     ud_set_input_buffer(ud_obj, code, (sizeof code)); 
     ud_input_skip(ud_obj, 2);
-    TEST_CHECK_INT(ud_disassemble(ud_obj), 1);
+		TEST_CHECK_SIZE_T(ud_disassemble(ud_obj), 1);
     TEST_CHECK_INT(ud_obj->mnemonic, UD_Inop);
 
     ud_set_input_buffer(ud_obj, code, (sizeof code)); 
     ud_input_skip(ud_obj, 0);
-    TEST_CHECK_INT(ud_disassemble(ud_obj), 2);
+		TEST_CHECK_SIZE_T(ud_disassemble(ud_obj), 2);
     TEST_CHECK_INT(ud_obj->mnemonic, UD_Imov);
     TEST_CHECK(ud_insn_ptr(ud_obj)[0] == 0x89);
     TEST_CHECK(ud_insn_ptr(ud_obj)[1] == 0xc8);
@@ -124,14 +135,14 @@ check_input(ud_t *ud_obj)
     /* bad skip */
     ud_set_input_buffer(ud_obj, code, (sizeof code)); 
     ud_input_skip(ud_obj, 3);
-    TEST_CHECK_INT(ud_disassemble(ud_obj), 0);
+		TEST_CHECK_SIZE_T(ud_disassemble(ud_obj), 0);
     ud_input_skip(ud_obj, 1);
-    TEST_CHECK_INT(ud_disassemble(ud_obj), 0);
+		TEST_CHECK_SIZE_T(ud_disassemble(ud_obj), 0);
     ud_set_input_buffer(ud_obj, code, (sizeof code)); 
     ud_input_skip(ud_obj, 0);
-    TEST_CHECK_INT(ud_disassemble(ud_obj), 2);
+		TEST_CHECK_SIZE_T(ud_disassemble(ud_obj), 2);
     ud_input_skip(ud_obj, 1000);
-    TEST_CHECK_INT(ud_disassemble(ud_obj), 0);
+		TEST_CHECK_SIZE_T(ud_disassemble(ud_obj), 0);
   }
 
   /* input hook test */
@@ -145,7 +156,7 @@ check_input(ud_t *ud_obj)
 
     n = 1;
     ud_set_input_hook(ud_obj, &input_callback);
-    TEST_CHECK_INT(ud_disassemble(ud_obj), 1);
+		TEST_CHECK_SIZE_T(ud_disassemble(ud_obj), 1);
     TEST_CHECK(ud_insn_ptr(ud_obj)[0] == 0x90);
     TEST_CHECK_INT(ud_obj->mnemonic, UD_Inop);
 
@@ -160,7 +171,7 @@ check_input(ud_t *ud_obj)
 
     n = 1;
     ud_input_skip(ud_obj, 2);
-    TEST_CHECK_INT(ud_disassemble(ud_obj), 0);
+		TEST_CHECK_SIZE_T(ud_disassemble(ud_obj), 0);
     TEST_CHECK(ud_input_end(ud_obj));
   }
 
