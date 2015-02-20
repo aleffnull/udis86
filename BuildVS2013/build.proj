@@ -32,6 +32,8 @@
 	</Target>
 	
 	<Target Name="BuildAll" DependsOnTargets="BuildDebug_x86; BuildRelease_x86; BuildDebug_x64; BuildRelease_x64"></Target>
+	
+	<Target Name="Rebuild" DependsOnTargets="Clean;BuildAll"></Target>
 
 	<Target Name = "PostBuild">
 		<ItemGroup>
@@ -53,5 +55,6 @@
 	
 	<Target Name = "Clean">
 		<RemoveDir Directories="$(BuildDir);$(PackageDir)" />
+	<RemoveDir Directories="bin;obj" />
 	</Target>
 </Project>
