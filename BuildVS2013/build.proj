@@ -54,26 +54,38 @@
 	<Target Name="Tests" DependsOnTargets="TestLibCheck" />
 	
 	<Target Name="TestLibCheck" DependsOnTargets="BuildAll">
-		<MSBuild Projects="$(MSBuildProjectFile)" Properties="CurrentPlatform=%(PlatformList.Identity)"
-		         Targets="TestLibCheckInner" />
+		<MSBuild Projects="$(MSBuildProjectFile)"
+		         Properties="CurrentPlatform=%(PlatformList.Identity)"
+		         Targets="TestLibCheckInner1" />
 	</Target>
 
-	<Target Name="TestLibCheckInner">
-		<Message Text="Testing LibCheck: $(CurrentPlatform) + %(ConfigurationList.Identity)" />
-		<Exec Command="bin\$(LibCheck)\$(CurrentPlatform)\%(ConfigurationList.Identity)\$(LibCheck).exe" />
+	<Target Name="TestLibCheckInner1">
+		<MSBuild Projects="$(MSBuildProjectFile)"
+		         Properties="CurrentPlatform=$(CurrentPlatform);CurrentConfiguration=%(ConfigurationList.Identity)"
+		         Targets="TestLibCheckInner2" />
+	</Target>
+
+	<Target Name="TestLibCheckInner2">
+		<Message Text="Testing LibCheck: $(CurrentPlatform) + $(CurrentConfiguration)" />
+		<Exec Command="bin\$(LibCheck)\$(CurrentPlatform)\$(CurrentConfiguration)\$(LibCheck).exe" />
 	</Target>
 	
 	<Target Name="TestSymResolve">
-		<MSBuild Projects="$(MSBuildProjectFile)" Properties="CurrentPlatform=%(PlatformList.Identity)"
-		         Targets="TestSymResolveInner" />
+		<MSBuild Projects="$(MSBuildProjectFile)"
+		         Properties="CurrentPlatform=%(PlatformList.Identity)"
+		         Targets="TestSymResolveInner1" />
 	</Target>
 
-	<Target Name="TestSymResolveInner">
-		<PropertyGroup>
-			<OutFile>bin\$(SymResolve)\$(CurrentPlatform)\%(ConfigurationList.Identity)\$(SymResolve).txt</OutFile>
-		</PropertyGroup>
-		<Message Text="Testing SymResolve: $(CurrentPlatform) + %(ConfigurationList.Identity)" />
-		<Exec Command="bin\$(SymResolve)\$(CurrentPlatform)\%(ConfigurationList.Identity)\$(SymResolve).exe > $(OutFile)" />
+	<Target Name="TestSymResolveInner1">
+		<MSBuild Projects="$(MSBuildProjectFile)"
+		         Properties="CurrentPlatform=$(CurrentPlatform);CurrentConfiguration=%(ConfigurationList.Identity)"
+		         Targets="TestSymResolveInner2" />
+	</Target>
+
+	<Target Name="TestSymResolveInner2">
+		<Message Text="Testing SymResolve: $(CurrentPlatform) + $(CurrentConfiguration)" />
+		<Exec WorkingDirectory="bin\$(SymResolve)\$(CurrentPlatform)\$(CurrentConfiguration)"
+		      Command="$(SymResolve).exe > $(SymResolve).txt" />
 	</Target>
 	
 	<!-- Deploy -->
