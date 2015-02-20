@@ -1,16 +1,28 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<PropertyGroup>
+		<Solution>udis86.sln</Solution>
 		<PackageDir>.\Deploy</PackageDir>
 		<BuildDir>.\Build</BuildDir>
 	</PropertyGroup>
+	
+	<ItemGroup>
+		<PlatformList Include="Win32" />
+		<PlatformList Include="x64" />
+	</ItemGroup>
+	
+	<ItemGroup>
+		<ConfigurationList Include="Debug" />
+		<ConfigurationList Include="Release" />
+	</ItemGroup>
 
+	<!-- Build -->
+		
 	<Target Name="PreBuild">
 		<Exec Command="c:\python27\python.exe ../scripts/ud_itab.py &quot;../docs/x86/optable.xml&quot; &quot;../libudis86/&quot;"
 		      WorkingDirectory="../libudis86" />
 	</Target>
 
-	<!-- Build all binaries -->
 	<Target Name="BuildRelease_x86" DependsOnTargets="PreBuild">
 		<MSBuild Projects="udis86.sln" Properties="Configuration=Release;Platform=Win32" />
 		<MSBuild Projects="udis86.sln" Properties="Configuration=Release-DLL;Platform=Win32" />
@@ -34,6 +46,20 @@
 	<Target Name="BuildAll" DependsOnTargets="BuildDebug_x86; BuildRelease_x86; BuildDebug_x64; BuildRelease_x64"></Target>
 	
 	<Target Name="Rebuild" DependsOnTargets="Clean;BuildAll"></Target>
+	
+	<!-- Tests -->
+	
+	<Target Name="TestLibCheck" DependsOnTargets="BuildAll">
+		<MSBuild Projects="$(MSBuildProjectFile)" Properties="CurrentPlatform=%(PlatformList.Identity)"
+		         Targets="TestLibCheckInner" />
+	</Target>
+	
+	<Target Name="TestLibCheckInner">
+		<Message Text="Testing LibCheck: $(CurrentPlatform) + %(ConfigurationList.Identity)" />
+		<Exec Command="bin\tests\$(CurrentPlatform)\%(ConfigurationList.Identity)\libcheck.exe" />
+	</Target>
+	
+	<!-- Deploy -->
 
 	<Target Name = "PostBuild">
 		<ItemGroup>
@@ -57,4 +83,5 @@
 		<RemoveDir Directories="$(BuildDir);$(PackageDir)" />
 	<RemoveDir Directories="bin;obj" />
 	</Target>
+
 </Project>
