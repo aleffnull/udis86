@@ -4,6 +4,7 @@
 		<Solution>udis86.sln</Solution>
 		<LibCheck>libcheck</LibCheck>
 		<SymResolve>symresolve</SymResolve>
+		<SymResolveDesired>..\tests\symresolve.ref</SymResolveDesired>
 		<PackageDir>.\Deploy</PackageDir>
 		<BuildDir>.\Build</BuildDir>
 	</PropertyGroup>
@@ -51,7 +52,7 @@
 	
 	<!-- Tests -->
 	
-	<Target Name="Tests" DependsOnTargets="TestLibCheck" />
+	<Target Name="Tests" DependsOnTargets="TestLibCheck;TestSymResolve" />
 	
 	<Target Name="TestLibCheck" DependsOnTargets="BuildAll">
 		<MSBuild Projects="$(MSBuildProjectFile)"
@@ -70,7 +71,7 @@
 		<Exec Command="bin\$(LibCheck)\$(CurrentPlatform)\$(CurrentConfiguration)\$(LibCheck).exe" />
 	</Target>
 	
-	<Target Name="TestSymResolve">
+	<Target Name="TestSymResolve" DependsOnTargets="BuildAll">
 		<MSBuild Projects="$(MSBuildProjectFile)"
 		         Properties="CurrentPlatform=%(PlatformList.Identity)"
 		         Targets="TestSymResolveInner1" />
@@ -83,9 +84,13 @@
 	</Target>
 
 	<Target Name="TestSymResolveInner2">
-		<Message Text="Testing SymResolve: $(CurrentPlatform) + $(CurrentConfiguration)" />
-		<Exec WorkingDirectory="bin\$(SymResolve)\$(CurrentPlatform)\$(CurrentConfiguration)"
-		      Command="$(SymResolve).exe > $(SymResolve).txt" />
+		<PropertyGroup>
+			<WorkDir>bin\$(SymResolve)\$(CurrentPlatform)\$(CurrentConfiguration)</WorkDir>
+			<SymResolveOutput>$(WorkDir)\$(SymResolve).txt</SymResolveOutput>
+		</PropertyGroup>
+		<Message Text="Testing SymResolve: $(WorkDir)" />
+		<Exec Command="$(WorkDir)\$(SymResolve).exe > $(SymResolveOutput)" />
+		<Exec Command="fc /W $(SymResolveDesired) $(SymResolveOutput)" />
 	</Target>
 	
 	<!-- Deploy -->
