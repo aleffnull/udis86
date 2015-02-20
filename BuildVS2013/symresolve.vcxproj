@@ -19,7 +19,7 @@
     </ProjectConfiguration>
   </ItemGroup>
   <PropertyGroup Label="Globals">
-    <ProjectGuid>{5041B9AE-8BD5-4CCF-B129-1C52F39A8355}</ProjectGuid>
+    <ProjectGuid>{4C8852D4-0D22-4376-AE9F-3983AE6F53D8}</ProjectGuid>
     <Keyword>Win32Proj</Keyword>
     <RootNamespace>libcheck</RootNamespace>
   </PropertyGroup>
@@ -68,23 +68,23 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)bin\libcheck\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)obj\libcheck\$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)bin\symresolve\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)obj\symresolve\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <OutDir>$(SolutionDir)bin\libcheck\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)obj\libcheck\$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)bin\symresolve\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)obj\symresolve\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)bin\libcheck\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)obj\libcheck\$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)bin\symresolve\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)obj\symresolve\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|x64'">
     <LinkIncremental>false</LinkIncremental>
-    <OutDir>$(SolutionDir)bin\libcheck\$(Platform)\$(Configuration)\</OutDir>
-    <IntDir>$(SolutionDir)obj\libcheck\$(Platform)\$(Configuration)\</IntDir>
+    <OutDir>$(SolutionDir)bin\symresolve\$(Platform)\$(Configuration)\</OutDir>
+    <IntDir>$(SolutionDir)obj\symresolve\$(Platform)\$(Configuration)\</IntDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
     <ClCompile>
@@ -163,7 +163,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\tests\libcheck.c" />
+    <ClCompile Include="..\tests\symresolve.c" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

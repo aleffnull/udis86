@@ -2,6 +2,8 @@
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<PropertyGroup>
 		<Solution>udis86.sln</Solution>
+		<LibCheck>libcheck</LibCheck>
+		<SymResolve>symresolve</SymResolve>
 		<PackageDir>.\Deploy</PackageDir>
 		<BuildDir>.\Build</BuildDir>
 	</PropertyGroup>
@@ -43,20 +45,35 @@
 		<MSBuild Projects="udis86.sln" Properties="Configuration=Debug-DLL;Platform=x64" />
 	</Target>
 	
-	<Target Name="BuildAll" DependsOnTargets="BuildDebug_x86; BuildRelease_x86; BuildDebug_x64; BuildRelease_x64"></Target>
+	<Target Name="BuildAll" DependsOnTargets="BuildDebug_x86; BuildRelease_x86; BuildDebug_x64; BuildRelease_x64" />
 	
-	<Target Name="Rebuild" DependsOnTargets="Clean;BuildAll"></Target>
+	<Target Name="Rebuild" DependsOnTargets="Clean;BuildAll" />
 	
 	<!-- Tests -->
+	
+	<Target Name="Tests" DependsOnTargets="TestLibCheck" />
 	
 	<Target Name="TestLibCheck" DependsOnTargets="BuildAll">
 		<MSBuild Projects="$(MSBuildProjectFile)" Properties="CurrentPlatform=%(PlatformList.Identity)"
 		         Targets="TestLibCheckInner" />
 	</Target>
-	
+
 	<Target Name="TestLibCheckInner">
 		<Message Text="Testing LibCheck: $(CurrentPlatform) + %(ConfigurationList.Identity)" />
-		<Exec Command="bin\tests\$(CurrentPlatform)\%(ConfigurationList.Identity)\libcheck.exe" />
+		<Exec Command="bin\$(LibCheck)\$(CurrentPlatform)\%(ConfigurationList.Identity)\$(LibCheck).exe" />
+	</Target>
+	
+	<Target Name="TestSymResolve">
+		<MSBuild Projects="$(MSBuildProjectFile)" Properties="CurrentPlatform=%(PlatformList.Identity)"
+		         Targets="TestSymResolveInner" />
+	</Target>
+
+	<Target Name="TestSymResolveInner">
+		<PropertyGroup>
+			<OutFile>bin\$(SymResolve)\$(CurrentPlatform)\%(ConfigurationList.Identity)\$(SymResolve).txt</OutFile>
+		</PropertyGroup>
+		<Message Text="Testing SymResolve: $(CurrentPlatform) + %(ConfigurationList.Identity)" />
+		<Exec Command="bin\$(SymResolve)\$(CurrentPlatform)\%(ConfigurationList.Identity)\$(SymResolve).exe > $(OutFile)" />
 	</Target>
 	
 	<!-- Deploy -->
