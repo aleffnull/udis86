@@ -1,10 +1,14 @@
 ﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
 	<PropertyGroup>
+		<Python>c:\python27\python.exe</Python>
+		<OpTable>../docs/x86/optable.xml</OpTable>
 		<Solution>udis86.sln</Solution>
+		<TestsDir>..\tests</TestsDir>
 		<LibCheck>libcheck</LibCheck>
 		<SymResolve>symresolve</SymResolve>
-		<SymResolveDesired>..\tests\symresolve.ref</SymResolveDesired>
+		<SymResolveDesired>$(TestsDir)\symresolve.ref</SymResolveDesired>
+		<Seed>1984</Seed>
 		<PackageDir>.\Deploy</PackageDir>
 		<BuildDir>.\Build</BuildDir>
 	</PropertyGroup>
@@ -18,11 +22,17 @@
 		<ConfigurationList Include="Debug" />
 		<ConfigurationList Include="Release" />
 	</ItemGroup>
+	
+	<ItemGroup>
+		<BitMode Include="16" />
+		<BitMode Include="32" />
+		<BitMode Include="64" />
+	</ItemGroup>
 
 	<!-- Build -->
 		
 	<Target Name="PreBuild">
-		<Exec Command="c:\python27\python.exe ../scripts/ud_itab.py &quot;../docs/x86/optable.xml&quot; &quot;../libudis86/&quot;"
+		<Exec Command="$(Python) ../scripts/ud_itab.py &quot;$(OpTable)&quot; &quot;../libudis86/&quot;"
 		      WorkingDirectory="../libudis86" />
 	</Target>
 
@@ -91,6 +101,22 @@
 		<Message Text="Testing SymResolve: $(WorkDir)" />
 		<Exec Command="$(WorkDir)\$(SymResolve).exe > $(SymResolveOutput)" />
 		<Exec Command="fc /W $(SymResolveDesired) $(SymResolveOutput)" />
+	</Target>
+	
+	<Target Name="DiffTests" DependsOnTargets="OprGen"></Target>
+	
+	<Target Name="OprGen">
+		<MSBuild Projects="$(MSBuildProjectFile)" Properties="CurrentBitMode=%(BitMode.Identity)"
+		         Targets="OprGenInner" />
+	</Target>
+	
+	<Target Name="OprGenInner">
+		<Message Text="Generating operand tests for $(CurrentBitMode) bits" />
+		<PropertyGroup>
+			<OutPutDir>$(TestsDir)\_results\asm\$(CurrentBitMode)</OutPutDir>
+		</PropertyGroup>
+		<MakeDir Directories="$(OutPutDir)" />
+		<Exec Command="$(Python) $(TestsDir)\oprgen.py $(OpTable) $(Seed) $(CurrentBitMode) > $(OutPutDir)\oprtest.asm" />
 	</Target>
 	
 	<!-- Deploy -->
