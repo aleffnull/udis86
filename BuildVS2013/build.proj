@@ -6,6 +6,8 @@
 		<Solution>udis86.sln</Solution>
 		<TestsDir>..\tests</TestsDir>
 		<TestsDataDir>tests</TestsDataDir>
+		<DiffTestShIn>$(TestsDir)\difftest.sh.in</DiffTestShIn>
+		<DiffTestShName>difftest.sh</DiffTestShName>
 		<LibCheck>libcheck</LibCheck>
 		<SymResolve>symresolve</SymResolve>
 		<SymResolveDesired>$(TestsDir)\symresolve.ref</SymResolveDesired>
@@ -63,7 +65,7 @@
 	
 	<!-- Tests -->
 	
-	<Target Name="Tests" DependsOnTargets="TestLibCheck;TestSymResolve" />
+	<Target Name="Tests" DependsOnTargets="TestLibCheck; TestSymResolve; DiffTests" />
 	
 	<Target Name="TestLibCheck" DependsOnTargets="BuildAll">
 		<MSBuild Projects="$(MSBuildProjectFile)"
@@ -104,20 +106,41 @@
 		<Exec Command="fc /W $(SymResolveDesired) $(SymResolveOutput)" />
 	</Target>
 	
-	<Target Name="DiffTests" DependsOnTargets="OprGen"></Target>
+	<Target Name="DiffTests" DependsOnTargets="BuildAll; OprGen">
+		<MSBuild Projects="$(MSBuildProjectFile)"
+		         Properties="CurrentPlatform=%(PlatformList.Identity)"
+		         Targets="OprGenInner1DiffTest" />
+	</Target>
 	
 	<Target Name="OprGen">
 		<MSBuild Projects="$(MSBuildProjectFile)" Properties="CurrentBitMode=%(BitMode.Identity)"
-		         Targets="OprGenInner" />
+		         Targets="OprGenInnerOprGen" />
 	</Target>
 	
-	<Target Name="OprGenInner">
+	<Target Name="OprGenInnerOprGen">
 		<Message Text="Generating operand tests for $(CurrentBitMode) bits" />
 		<PropertyGroup>
 			<OutPutDir>$(TestsDataDir)\asm\$(CurrentBitMode)</OutPutDir>
 		</PropertyGroup>
 		<MakeDir Directories="$(OutPutDir)" />
 		<Exec Command="$(Python) $(TestsDir)\oprgen.py $(OpTable) $(Seed) $(CurrentBitMode) > $(OutPutDir)\oprtest.asm" />
+	</Target>
+
+	<Target Name="OprGenInner1DiffTest">
+		<MSBuild Projects="$(MSBuildProjectFile)"
+		         Properties="CurrentPlatform=$(CurrentPlatform);CurrentConfiguration=%(ConfigurationList.Identity)"
+		         Targets="OprGenInner2DiffTest" />
+	</Target>
+
+	<Target Name="OprGenInner2DiffTest">
+		<PropertyGroup>
+			<DiffTestShResultDir>$(TestsDataDir)\difftest\$(CurrentPlatform)\$(CurrentConfiguration)</DiffTestShResultDir>
+			<udcli>bin\udcli\$(CurrentPlatform)\$(CurrentConfiguration)\udcli.exe</udcli>
+		</PropertyGroup>
+		<Message Text="Running difftest.sh for $(CurrentPlatform)\$(CurrentConfiguration)" />
+	
+		<MakeDir Directories="$(DiffTestShResultDir)" />
+		<Copy SourceFiles="$(DiffTestShIn)" DestinationFiles="$(DiffTestShResultDir)\$(DiffTestShName)" />
 	</Target>
 	
 	<!-- Deploy -->
