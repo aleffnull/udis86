@@ -5,6 +5,7 @@
 		<OpTable>../docs/x86/optable.xml</OpTable>
 		<Solution>udis86.sln</Solution>
 		<TestsDir>..\tests</TestsDir>
+		<TestsDataDir>tests</TestsDataDir>
 		<LibCheck>libcheck</LibCheck>
 		<SymResolve>symresolve</SymResolve>
 		<SymResolveDesired>$(TestsDir)\symresolve.ref</SymResolveDesired>
@@ -113,7 +114,7 @@
 	<Target Name="OprGenInner">
 		<Message Text="Generating operand tests for $(CurrentBitMode) bits" />
 		<PropertyGroup>
-			<OutPutDir>$(TestsDir)\_results\asm\$(CurrentBitMode)</OutPutDir>
+			<OutPutDir>$(TestsDataDir)\asm\$(CurrentBitMode)</OutPutDir>
 		</PropertyGroup>
 		<MakeDir Directories="$(OutPutDir)" />
 		<Exec Command="$(Python) $(TestsDir)\oprgen.py $(OpTable) $(Seed) $(CurrentBitMode) > $(OutPutDir)\oprtest.asm" />
@@ -141,7 +142,8 @@
 	
 	<Target Name = "Clean">
 		<RemoveDir Directories="$(BuildDir);$(PackageDir)" />
-	<RemoveDir Directories="bin;obj" />
+		<RemoveDir Directories="bin;obj" />
+		<RemoveDir Directories="$(TestsDataDir)" />
 	</Target>
 
 </Project>

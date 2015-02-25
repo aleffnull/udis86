@@ -35,6 +35,7 @@ tests/*.bin
 tests/*.out
 tests/libcheck
 tests/difftest.sh
+BuildVS*/tests
 scripts/ud_*asmtest*
 
 # Ignore distcheck outut
