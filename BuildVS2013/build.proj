@@ -6,13 +6,18 @@
 	<PropertyGroup>
 		<Python>c:\python27\python.exe</Python>
 		<Yasm>yasm.exe</Yasm>
-		<Shell>C:\cygwin64\bin\bash.exe</Shell>
+		<Cygwin>C:\cygwin64\bin</Cygwin>
+		<Shell>$(Cygwin)\bash.exe</Shell>
+		<Sed>$(Cygwin)\sed.exe</Sed>
+		<Find>$(Cygwin)\find.exe</Find>
+		<Basename>$(Cygwin)\basename.exe</Basename>
 		<OpTable>../docs/x86/optable.xml</OpTable>
 		<Solution>udis86.sln</Solution>
 		<TestsDir>..\tests</TestsDir>
 		<TestsDataDir>tests</TestsDataDir>
 		<DiffTestShIn>$(TestsDir)\difftest.sh.in</DiffTestShIn>
 		<DiffTestShName>difftest.sh</DiffTestShName>
+		<Encoding>utf-8-without-bom</Encoding>
 		<LibCheck>libcheck</LibCheck>
 		<SymResolve>symresolve</SymResolve>
 		<SymResolveDesired>$(TestsDir)\symresolve.ref</SymResolveDesired>
@@ -141,17 +146,23 @@
 		<PropertyGroup>
 			<DiffTestShResultDir>$(TestsDataDir)\difftest\$(CurrentPlatform)\$(CurrentConfiguration)</DiffTestShResultDir>
 			<DiffTestShResultFile>$(DiffTestShResultDir)\$(DiffTestShName)</DiffTestShResultFile>
-			<udcli>bin\udcli\$(CurrentPlatform)\$(CurrentConfiguration)\udcli.exe</udcli>
+			<udcli>bin/udcli/$(CurrentPlatform)/$(CurrentConfiguration)/udcli.exe</udcli>
+			<TestsDirFixed>$(TestsDir.Replace('\', '/'))</TestsDirFixed>
+			<TestsDataDirFixed>$(TestsDataDir.Replace('\', '/'))</TestsDataDirFixed>
+			<FindFixed>$(Find.Replace('\', '/'))</FindFixed>
+			<BasenameFixed>$(Basename.Replace('\', '/'))</BasenameFixed>
 		</PropertyGroup>
 		<Message Text="Running difftest.sh for $(CurrentPlatform)\$(CurrentConfiguration)" />
 	
 		<MakeDir Directories="$(DiffTestShResultDir)" />
 		<!-- Copy and convert line endings -->
-		<Exec Command="tr -d '\015' &lt; $(DiffTestShIn) &gt; $(DiffTestShResultFile)" />
-		<FileUpdate Files="$(DiffTestShResultFile)" Regex="\@top_builddir\@\/udcli\/udcli" ReplacementText="$(udcli)" Encoding="utf-8-without-bom" />
-		<FileUpdate Files="$(DiffTestShResultFile)" Regex="\@srcdir\@" ReplacementText="$(TestsDir)" Encoding="utf-8-without-bom" />
-		<FileUpdate Files="$(DiffTestShResultFile)" Regex="\@builddir\@" ReplacementText="$(TestsDataDir)" Encoding="utf-8-without-bom" />
-		<FileUpdate Files="$(DiffTestShResultFile)" Regex="\@YASM\@" ReplacementText="$(Yasm)" Encoding="utf-8-without-bom" />
+		<Exec Command="$(Sed) 's/^M$//' &lt; $(DiffTestShIn) &gt; $(DiffTestShResultFile)" />
+		<FileUpdate Files="$(DiffTestShResultFile)" Regex="\@top_builddir\@\/udcli\/udcli" ReplacementText="$(udcli)" Encoding="$(Encoding)" />
+		<FileUpdate Files="$(DiffTestShResultFile)" Regex="\@srcdir\@" ReplacementText="$(TestsDirFixed)" Encoding="$(Encoding)" />
+		<FileUpdate Files="$(DiffTestShResultFile)" Regex="\@builddir\@" ReplacementText="$(TestsDataDirFixed)" Encoding="$(Encoding)" />
+		<FileUpdate Files="$(DiffTestShResultFile)" Regex="\@YASM\@" ReplacementText="$(Yasm)" Encoding="$(Encoding)" />
+		<FileUpdate Files="$(DiffTestShResultFile)" Regex="find" ReplacementText="$(FindFixed)" Encoding="$(Encoding)" />
+		<FileUpdate Files="$(DiffTestShResultFile)" Regex="basename" ReplacementText="$(BasenameFixed)" Encoding="$(Encoding)" />
 		<Exec Command="$(Shell) $(DiffTestShResultFile)" />
 	</Target>
 	
