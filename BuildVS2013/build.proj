@@ -153,7 +153,7 @@
 			<BasenameFixed>$(Basename.Replace('\', '/'))</BasenameFixed>
 		</PropertyGroup>
 		<Message Text="Running difftest.sh for $(CurrentPlatform)\$(CurrentConfiguration)" />
-	
+
 		<MakeDir Directories="$(DiffTestShResultDir)" />
 		<!-- Copy and convert line endings -->
 		<Exec Command="$(Sed) 's/^M$//' &lt; $(DiffTestShIn) &gt; $(DiffTestShResultFile)" />
@@ -163,7 +163,11 @@
 		<FileUpdate Files="$(DiffTestShResultFile)" Regex="\@YASM\@" ReplacementText="$(Yasm)" Encoding="$(Encoding)" />
 		<FileUpdate Files="$(DiffTestShResultFile)" Regex="find" ReplacementText="$(FindFixed)" Encoding="$(Encoding)" />
 		<FileUpdate Files="$(DiffTestShResultFile)" Regex="basename" ReplacementText="$(BasenameFixed)" Encoding="$(Encoding)" />
+
+		<Message Text="Running diff tests" />
 		<Exec Command="$(Shell) $(DiffTestShResultFile)" />
+		<Message Text="Running refup diff tests" />
+		<Exec Command="$(Shell) $(DiffTestShResultFile) refup" />
 	</Target>
 	
 	<!-- Deploy -->
